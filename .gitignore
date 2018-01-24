@@ -1,0 +1,2 @@
+# Don't share your client_secret.json.
+*.json
