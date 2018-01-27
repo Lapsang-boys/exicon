@@ -7,6 +7,16 @@
 $ git clone git@github.com:lapsang-boys/exicon.git
 ```
 
+## Dependencies
+
+```shell
+$ pip install --upgrade google-api-python-client
+```
+
+## API key
+
+Ask @karlek for API key.
+
 ## Usage
 
 ```shell
