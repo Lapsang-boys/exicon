@@ -64,7 +64,7 @@ def main():
     try:
         with open(args.path+'/.git/config') as f:
             config_file = f.read()
-            if not "crimson-chronicles" in config_file:
+            if not "crimson-chronicles" in config_file.lower():
                 print("This is not a Crimson Chronicles project folder. Check your path argument.")
                 return
     except EnvironmentError:
@@ -87,7 +87,7 @@ def main():
             update_team(service, sheet)
 
 def get_towers(service, sheet):
-    rangeName = '%s!C27:D' % (sheet)
+    rangeName = '%s!C28:D' % (sheet)
     result = service.spreadsheets().values().get(
         spreadsheetId=SPREADSHEETID, range=rangeName).execute()
     values = result.get('values', [])
@@ -97,10 +97,8 @@ def get_towers(service, sheet):
         return towers, True
     else:
         for row in values:
-            # print(row)
             wurst = row[0]
             if len(row) == 1:
-                print("\t[!] Missing filename")
                 continue
             filename = row[1]
             towers[filename] = wurst
@@ -133,12 +131,17 @@ def update_tower(path, tower):
             print("\t\t[!] Broken fields: %s" % (path))
             return False
         values[vals[0] + " = "] = vals[1]
-    
+
     # Ugly: writes the whole file again.
     for i, line in enumerate(fileinput.input(path, inplace=1)):
         found = False
         for vs in values:
             if line.startswith(vs):
+                sys.stdout.write(vs + values[vs] + '\n')
+                del values[vs]
+                found = True
+                break
+            elif len(values) == 1:
                 sys.stdout.write(vs + values[vs] + '\n')
                 del values[vs]
                 found = True
